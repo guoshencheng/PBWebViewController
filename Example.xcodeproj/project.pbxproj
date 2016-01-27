@@ -17,6 +17,7 @@
 		1882DF9F1733D8CD0030D3E2 /* KMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1882DF9E1733D8CD0030D3E2 /* KMAppDelegate.m */; };
 		1882DFA81733D8CD0030D3E2 /* KMMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1882DFA71733D8CD0030D3E2 /* KMMasterViewController.m */; };
 		1882DFAB1733D8CD0030D3E2 /* KMWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1882DFAA1733D8CD0030D3E2 /* KMWebViewController.m */; };
+		2ED03E521C592F2900039F85 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED03E511C592F2900039F85 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6401361418198A4B0041A84C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6401361318198A4B0041A84C /* Images.xcassets */; };
 		6404E5801913A20700221937 /* PBWebViewController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 6404E57E1913A20700221937 /* PBWebViewController.podspec */; };
 		6404E5841913A21600221937 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6404E5821913A21600221937 /* LICENSE.txt */; };
@@ -44,6 +45,7 @@
 		1882DFA71733D8CD0030D3E2 /* KMMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KMMasterViewController.m; sourceTree = "<group>"; };
 		1882DFA91733D8CD0030D3E2 /* KMWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KMWebViewController.h; sourceTree = "<group>"; };
 		1882DFAA1733D8CD0030D3E2 /* KMWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KMWebViewController.m; sourceTree = "<group>"; };
+		2ED03E511C592F2900039F85 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		6401361318198A4B0041A84C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6404E57E1913A20700221937 /* PBWebViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PBWebViewController.podspec; sourceTree = SOURCE_ROOT; };
 		6404E5821913A21600221937 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = SOURCE_ROOT; };
@@ -57,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ED03E521C592F2900039F85 /* WebKit.framework in Frameworks */,
 				1882DF8F1733D8CD0030D3E2 /* UIKit.framework in Frameworks */,
 				1882DF911733D8CD0030D3E2 /* Foundation.framework in Frameworks */,
 				1882DF931733D8CD0030D3E2 /* CoreGraphics.framework in Frameworks */,
@@ -86,6 +89,7 @@
 		1882DF8D1733D8CC0030D3E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2ED03E511C592F2900039F85 /* WebKit.framework */,
 				1882DF8E1733D8CC0030D3E2 /* UIKit.framework */,
 				1882DF901733D8CD0030D3E2 /* Foundation.framework */,
 				1882DF921733D8CD0030D3E2 /* CoreGraphics.framework */,
@@ -179,7 +183,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = KM;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Mikael Konutgan";
 			};
 			buildConfigurationList = 1882DF861733D8CC0030D3E2 /* Build configuration list for PBXProject "Example" */;
@@ -258,6 +262,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -269,7 +274,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -294,7 +299,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -310,6 +315,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example/Example-Prefix.pch";
 				INFOPLIST_FILE = "Example/Example-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kmikael.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -323,6 +329,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example/Example-Prefix.pch";
 				INFOPLIST_FILE = "Example/Example-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kmikael.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

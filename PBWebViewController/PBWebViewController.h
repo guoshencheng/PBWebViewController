@@ -7,6 +7,40 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
+
+@protocol WebViewProvider <NSObject>
+
+@property (strong, nonatomic) NSURLRequest *request;
+@property (strong, nonatomic) NSURL *url;
+
+- (void)setDelegateViews:(id)delegateView;
+- (void)setScalesPagesToFit:(BOOL)setPages;
+- (void)loadRequest:(NSURLRequest *)request;
+- (void)loadRequestFromString:(NSString *)urlNameAsString;
+- (void)stopLoad;
+- (void)loadHTML:(NSString *)string baseURL:(NSURL *)baseURL;
+- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler: (void (^)(id, NSError *)) completionHandler;
+
+@end
+
+@interface UIWebView (PBWebViewController) <WebViewProvider>
+
+/*
+ * Shorthand for setting UIWebViewDelegate to a class.
+ */
+- (void) setDelegateViews: (id <UIWebViewDelegate>) delegateView;
+
+@end
+
+@interface WKWebView (PBWebViewController) <WebViewProvider>
+
+/*
+ * Shorthand for setting WKUIDelegate and WKNavigationDelegate to the same class.
+ */
+- (void) setDelegateViews: (id <WKNavigationDelegate, WKUIDelegate>) delegateView;
+
+@end
 
 /**
  * The `PBWebViewController` class is a view controller that displays the contents of a URL
@@ -21,22 +55,6 @@
  * Otherwise, you can set a `URL` after the web view has already been loaded and then manually call `load`.
  */
 @property (strong, nonatomic) NSURL *URL;
-
-/** 
- * The array of data objects on which to perform the activity.
- * `@[self.URL]` is used if nothing is provided.
- */
-@property (strong, nonatomic) NSArray *activityItems;
-
-/**
- * An array of `UIActivity` objects representing the custom services that your application supports.
- */
-@property (strong, nonatomic) NSArray *applicationActivities;
-
-/**
- * The list of services that should not be displayed.
- */
-@property (strong, nonatomic) NSArray *excludedActivityTypes;
 
 /**
  * A Boolean indicating whether the web view controller’s toolbar,

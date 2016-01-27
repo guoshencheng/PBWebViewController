@@ -7,15 +7,110 @@
 //
 
 #import "PBWebViewController.h"
+#import <objc/runtime.h>
+
+#pragma mark - UIWebView+PBWebViewController
+
+@implementation UIWebView (PBWebViewController)
+@dynamic url;
+
+- (void)setDelegateViews:(id <UIWebViewDelegate>) delegateView {
+    [self setDelegate: delegateView];
+}
+
+- (void)loadRequestFromString: (NSString *) urlNameAsString {
+    [self loadRequest: [NSURLRequest requestWithURL:[NSURL URLWithString: urlNameAsString]]];
+}
+
+- (void)stopLoad {
+    [self stopLoading];
+}
+
+- (void)loadHTML:(NSString *)string baseURL:(NSURL *)baseURL {
+    [self loadHTMLString:string baseURL:baseURL];
+}
+
+- (NSURL *)url {
+    return [[self request] URL];
+}
+
+- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler: (void (^)(id, NSError *)) completionHandler {
+    NSString *string = [self stringByEvaluatingJavaScriptFromString: javaScriptString];
+    if (completionHandler) {
+        completionHandler(string, nil);
+    }
+}
+
+- (void)setScalesPagesToFit:(BOOL)setPages {
+    self.scalesPageToFit = setPages;
+}
+
+@end
+
+#pragma mark - WKWebView+PBWebViewController
+
+@implementation WKWebView (PBWebViewController)
+@dynamic url;
+
+- (void)setDelegateViews:(id <WKNavigationDelegate, WKUIDelegate>) delegateView {
+    [self setNavigationDelegate: delegateView];
+    [self setUIDelegate: delegateView];
+}
+
+- (NSURLRequest *)request {
+    return objc_getAssociatedObject(self, @selector(request));
+}
+
+- (void)setRequest:(NSURLRequest *)request {
+    objc_setAssociatedObject(self, @selector(request), request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)altLoadRequest:(NSURLRequest *)request {
+    [self setRequest:request];
+    [self altLoadRequest:request];
+}
+
+- (void)stopLoad {
+    [self stopLoading];
+}
+
+- (void)loadRequestFromString:(NSString *)urlNameAsString {
+    [self loadRequest: [NSURLRequest requestWithURL:[NSURL URLWithString: urlNameAsString]]];
+}
+
+- (void)loadHTML:(NSString *)string baseURL:(NSURL *)baseURL {
+    [self loadHTMLString:string baseURL:baseURL];
+}
+
+- (void)setScalesPagesToFit:(BOOL)setPages {
+    return; // not supported in WKWebView
+}
+
++ (void)load {
+    //exchange loadRequest and altLoadRequest
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
+        SEL originalSelector = @selector(loadRequest:);
+        SEL swizzledSelector = @selector(altLoadRequest:);
+        Method originalMethod = class_getInstanceMethod(class, originalSelector);
+        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+        BOOL didAddMethod = class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
+        if (didAddMethod) {
+            class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+        } else {
+            method_exchangeImplementations(originalMethod, swizzledMethod);
+        }
+    });
+}
+
+@end
+
+#pragma mark - PBWebViewController
 
 @interface PBWebViewController () <UIPopoverControllerDelegate>
 
-@property (strong, nonatomic) UIWebView *webView;
-
-@property (strong, nonatomic) UIBarButtonItem *stopLoadingButton;
-@property (strong, nonatomic) UIBarButtonItem *reloadButton;
-@property (strong, nonatomic) UIBarButtonItem *backButton;
-@property (strong, nonatomic) UIBarButtonItem *forwardButton;
+@property (strong, nonatomic) UIView<WebViewProvider> *webView;
 
 @property (strong, nonatomic) UIPopoverController *activitiyPopoverController;
 
@@ -25,8 +120,7 @@
 
 @implementation PBWebViewController
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         [self commonInit];
@@ -34,8 +128,7 @@
     return self;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
         [self commonInit];
@@ -43,16 +136,13 @@
     return self;
 }
 
-- (void)commonInit
-{
+- (void)commonInit {
     _showsNavigationToolbar = YES;
 }
 
-- (void)load
-{
+- (void)load {
     NSURLRequest *request = [NSURLRequest requestWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60.0];
     [self.webView loadRequest:request];
-    
     if (self.navigationController.toolbarHidden) {
         self.toolbarPreviouslyHidden = YES;
         if (self.showsNavigationToolbar) {
@@ -61,41 +151,37 @@
     }
 }
 
-- (void)clear
-{
-    [self.webView loadHTMLString:@"" baseURL:nil];
+- (void)clear {
+    [self.webView loadHTML:@"" baseURL:nil];
     self.title = @"";
 }
 
 #pragma mark - View controller lifecycle
 
-- (void)loadView
-{
-    self.webView = [[UIWebView alloc] init];
-    self.webView.scalesPageToFit = YES;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    if (NSClassFromString(@"WKWebView")) {
+        self.webView = [[WKWebView alloc] initWithFrame: [[self view] bounds]];
+    } else {
+        self.webView = [[UIWebView alloc] initWithFrame: [[self view] bounds]];
+    }
+    [self.webView setScalesPagesToFit:YES];
     self.view = self.webView;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    [self setupToolBarItems];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.webView.delegate = self;
+    [self.webView setDelegateViews:self];
     if (self.URL) {
         [self load];
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
+    [[[WKWebView alloc] init] stopLoading];
     [super viewWillDisappear:animated];
-    [self.webView stopLoading];
-    self.webView.delegate = nil;
+    [self.webView stopLoad];
+    [self.webView setDelegateViews:nil];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
     if (self.toolbarPreviouslyHidden && self.showsNavigationToolbar) {
@@ -105,177 +191,42 @@
 
 #pragma mark - Helpers
 
-- (UIImage *)backButtonImage
-{
-    static UIImage *image;
-    
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
-        CGSize size = CGSizeMake(12.0, 21.0);
-        UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
-        
-        UIBezierPath *path = [UIBezierPath bezierPath];
-        path.lineWidth = 1.5;
-        path.lineCapStyle = kCGLineCapButt;
-        path.lineJoinStyle = kCGLineJoinMiter;
-        [path moveToPoint:CGPointMake(11.0, 1.0)];
-        [path addLineToPoint:CGPointMake(1.0, 11.0)];
-        [path addLineToPoint:CGPointMake(11.0, 20.0)];
-        [path stroke];
-        
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    });
-    
-    return image;
-}
-
-- (UIImage *)forwardButtonImage
-{
-    static UIImage *image;
-    
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
-        UIImage *backButtonImage = [self backButtonImage];
-        
-        CGSize size = backButtonImage.size;
-        UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
-        
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        
-        CGFloat x_mid = size.width / 2.0;
-        CGFloat y_mid = size.height / 2.0;
-        
-        CGContextTranslateCTM(context, x_mid, y_mid);
-        CGContextRotateCTM(context, M_PI);
-        
-        [backButtonImage drawAtPoint:CGPointMake(-x_mid, -y_mid)];
-        
-        image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    });
-    
-    return image;
-}
-
-- (void)setupToolBarItems
-{
-    self.stopLoadingButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop
-                                                                           target:self.webView
-                                                                           action:@selector(stopLoading)];
-    
-    self.reloadButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                                      target:self.webView
-                                                                      action:@selector(reload)];
-    
-    self.backButton = [[UIBarButtonItem alloc] initWithImage:[self backButtonImage]
-                                                       style:UIBarButtonItemStylePlain
-                                                      target:self.webView
-                                                      action:@selector(goBack)];
-    
-    self.forwardButton = [[UIBarButtonItem alloc] initWithImage:[self forwardButtonImage]
-                                                          style:UIBarButtonItemStylePlain
-                                                         target:self.webView
-                                                         action:@selector(goForward)];
-    
-    self.backButton.enabled = NO;
-    self.forwardButton.enabled = NO;
-    
-    UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                                  target:self
-                                                                                  action:@selector(action:)];
-    
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                           target:nil
-                                                                           action:nil];
-    
-    UIBarButtonItem *space_ = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
-                                                                            target:nil
-                                                                            action:nil];
-    space_.width = 60.0f;
-    
-    self.toolbarItems = @[self.stopLoadingButton, space, self.backButton, space_, self.forwardButton, space, actionButton];
-}
-
-- (void)toggleState
-{
-    self.backButton.enabled = self.webView.canGoBack;
-    self.forwardButton.enabled = self.webView.canGoForward;
-    
-    NSMutableArray *toolbarItems = [self.toolbarItems mutableCopy];
-    if (self.webView.loading) {
-        toolbarItems[0] = self.stopLoadingButton;
-    } else {
-        toolbarItems[0] = self.reloadButton;
-    }
-    self.toolbarItems = [toolbarItems copy];
-}
-
-- (void)finishLoad
-{
-    [self toggleState];
+- (void)finishLoad {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-}
-
-#pragma mark - Button actions
-
-- (void)action:(id)sender
-{
-    if (self.activitiyPopoverController.popoverVisible) {
-        [self.activitiyPopoverController dismissPopoverAnimated:YES];
-        return;
-    }
-    
-    NSArray *activityItems = @[self.URL];
-    
-    if (self.activityItems) {
-        activityItems = self.activityItems;
-    }
-    
-    UIActivityViewController *vc = [[UIActivityViewController alloc] initWithActivityItems:activityItems
-                                                                     applicationActivities:self.applicationActivities];
-    vc.excludedActivityTypes = self.excludedActivityTypes;
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        [self presentViewController:vc animated:YES completion:NULL];
-    } else {
-        if (!self.activitiyPopoverController) {
-            self.activitiyPopoverController = [[UIPopoverController alloc] initWithContentViewController:vc];
-        }
-        
-        self.activitiyPopoverController.delegate = self;
-        
-        UIBarButtonItem *barButtonItem = [self.toolbarItems lastObject];
-        [self.activitiyPopoverController presentPopoverFromBarButtonItem:barButtonItem
-                                                permittedArrowDirections:UIPopoverArrowDirectionAny
-                                                                animated:YES];
-    }
 }
 
 #pragma mark - Web view delegate
 
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
+- (void)webViewDidStartLoad:(UIWebView *)webView {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [self toggleState];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
     [self finishLoad];
     self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.URL = self.webView.request.URL;
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     [self finishLoad];
+}
+
+- (void) webView: (WKWebView *) webView didStartProvisionalNavigation: (WKNavigation *) navigation {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void) webView: (WKWebView *) webView didFailNavigation: (WKNavigation *) navigation withError: (NSError *) error {
+    [self finishLoad];
+}
+
+- (void) webView: (WKWebView *) webView didFinishNavigation: (WKNavigation *) navigation {
+    [self finishLoad];
+    self.URL = self.webView.request.URL;
 }
 
 #pragma mark - Popover controller delegate
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
-{
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
     self.activitiyPopoverController = nil;
 }
 

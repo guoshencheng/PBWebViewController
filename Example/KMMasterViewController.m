@@ -52,8 +52,7 @@
     return [self.bookmarks count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -70,15 +69,12 @@
 {
     NSString *bookmark = self.bookmarks[indexPath.row];
     
+    [self.navigationController setNavigationBarHidden:YES];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         self.webViewController = [[PBWebViewController alloc] init];
     }
-    
-    PBSafariActivity *activity = [[PBSafariActivity alloc] init];
+    self.webViewController.showsNavigationToolbar = NO;
     self.webViewController.URL = [NSURL URLWithString:bookmark];
-    self.webViewController.applicationActivities = @[activity];
-    self.webViewController.excludedActivityTypes = @[UIActivityTypeMail, UIActivityTypeMessage, UIActivityTypePostToWeibo];
-    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         [self.navigationController pushViewController:self.webViewController animated:YES];
     } else {
