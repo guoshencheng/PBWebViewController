@@ -195,7 +195,7 @@
         self.webView = [[UIWebView alloc] initWithFrame: [[self view] bounds]];
     }
     [self.view addSubview:self.webView];
-    self.webView.frame = CGRectMake(0, 60, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    self.webView.frame = CGRectMake(0, 60, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 60);
     [self.webView setScalesPagesToFit:YES];
 }
 
