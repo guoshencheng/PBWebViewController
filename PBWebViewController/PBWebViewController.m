@@ -7,6 +7,7 @@
 //
 
 #import "PBWebViewController.h"
+#import "PBNavigationBar.h"
 #import <objc/runtime.h>
 
 #pragma mark - UIWebView+PBWebViewController
@@ -108,12 +109,11 @@
 
 #pragma mark - PBWebViewController
 
-@interface PBWebViewController () <UIPopoverControllerDelegate>
+@interface PBWebViewController () <UIPopoverControllerDelegate, PBNavigationBarDelegate>
 
 @property (strong, nonatomic) UIView<WebViewProvider> *webView;
-
+@property (strong, nonatomic) PBNavigationBar *navigationBar;
 @property (strong, nonatomic) UIPopoverController *activitiyPopoverController;
-
 @property (assign, nonatomic) BOOL toolbarPreviouslyHidden;
 
 @end
@@ -156,17 +156,17 @@
     self.title = @"";
 }
 
+- (void)setNavigationButtonImage:(UIImage *)image forState:(UIControlState)state {
+    [self.navigationBar setLeftButtonImage:image forState:state];
+}
+
 #pragma mark - View controller lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (NSClassFromString(@"WKWebView")) {
-        self.webView = [[WKWebView alloc] initWithFrame: [[self view] bounds]];
-    } else {
-        self.webView = [[UIWebView alloc] initWithFrame: [[self view] bounds]];
-    }
-    [self.webView setScalesPagesToFit:YES];
-    self.view = self.webView;
+//    self.navigationController.navigationBarHidden = YES;
+    [self configureWebView];
+    [self configureNavigationBar];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -183,10 +183,36 @@
     [self.webView stopLoad];
     [self.webView setDelegateViews:nil];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    
     if (self.toolbarPreviouslyHidden && self.showsNavigationToolbar) {
         [self.navigationController setToolbarHidden:YES animated:YES];
     }
+}
+
+- (void)configureWebView {
+    if (NSClassFromString(@"WKWebView")) {
+        self.webView = [[WKWebView alloc] initWithFrame: [[self view] bounds]];
+    } else {
+        self.webView = [[UIWebView alloc] initWithFrame: [[self view] bounds]];
+    }
+    [self.view addSubview:self.webView];
+    self.webView.frame = CGRectMake(0, 60, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    [self.webView setScalesPagesToFit:YES];
+}
+
+- (void)configureNavigationBar {
+    self.navigationBar = [PBNavigationBar create];
+    self.navigationBar.frame = CGRectMake(0, 15, [UIScreen mainScreen].bounds.size.width, 45);
+    [self.view addSubview:self.navigationBar];
+    self.navigationBar.delegate = self;
+}
+
+- (void)setTitle:(NSString *)title {
+    [super setTitle:title];
+    self.navigationBar.title = title;
+}
+
+- (void)navigationBarDidClickLeftButton:(PBNavigationBar *)navigationBar {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Helpers

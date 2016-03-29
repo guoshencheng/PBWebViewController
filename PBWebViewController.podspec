@@ -8,5 +8,6 @@ Pod::Spec.new do |s|
   s.source       = {:git => 'https://github.com/kmikael/PBWebViewController.git', :tag => '0.3'}
   s.platform     = :ios, '7.0'
   s.source_files = 'PBWebViewController/'
+  s.resources = ['resources/PBNavigationBar.xib']
   s.requires_arc = true
 end

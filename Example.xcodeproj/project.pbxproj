@@ -17,6 +17,8 @@
 		1882DF9F1733D8CD0030D3E2 /* KMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1882DF9E1733D8CD0030D3E2 /* KMAppDelegate.m */; };
 		1882DFA81733D8CD0030D3E2 /* KMMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1882DFA71733D8CD0030D3E2 /* KMMasterViewController.m */; };
 		1882DFAB1733D8CD0030D3E2 /* KMWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1882DFAA1733D8CD0030D3E2 /* KMWebViewController.m */; };
+		2E59A1221CAA72820019E397 /* PBNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E59A1201CAA72820019E397 /* PBNavigationBar.m */; };
+		2E59A1231CAA72820019E397 /* PBNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2E59A1211CAA72820019E397 /* PBNavigationBar.xib */; };
 		2ED03E521C592F2900039F85 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED03E511C592F2900039F85 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6401361418198A4B0041A84C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6401361318198A4B0041A84C /* Images.xcassets */; };
 		6404E5801913A20700221937 /* PBWebViewController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 6404E57E1913A20700221937 /* PBWebViewController.podspec */; };
@@ -45,6 +47,9 @@
 		1882DFA71733D8CD0030D3E2 /* KMMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KMMasterViewController.m; sourceTree = "<group>"; };
 		1882DFA91733D8CD0030D3E2 /* KMWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KMWebViewController.h; sourceTree = "<group>"; };
 		1882DFAA1733D8CD0030D3E2 /* KMWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KMWebViewController.m; sourceTree = "<group>"; };
+		2E59A11F1CAA72820019E397 /* PBNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PBNavigationBar.h; path = PBWebViewController/PBNavigationBar.h; sourceTree = SOURCE_ROOT; };
+		2E59A1201CAA72820019E397 /* PBNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PBNavigationBar.m; path = PBWebViewController/PBNavigationBar.m; sourceTree = SOURCE_ROOT; };
+		2E59A1211CAA72820019E397 /* PBNavigationBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PBNavigationBar.xib; path = resources/PBNavigationBar.xib; sourceTree = SOURCE_ROOT; };
 		2ED03E511C592F2900039F85 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		6401361318198A4B0041A84C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6404E57E1913A20700221937 /* PBWebViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PBWebViewController.podspec; sourceTree = SOURCE_ROOT; };
@@ -123,6 +128,9 @@
 		1891119F17350B780089B197 /* PBWebViewController */ = {
 			isa = PBXGroup;
 			children = (
+				2E59A11F1CAA72820019E397 /* PBNavigationBar.h */,
+				2E59A1201CAA72820019E397 /* PBNavigationBar.m */,
+				2E59A1211CAA72820019E397 /* PBNavigationBar.xib */,
 				18510C7A1733EA6100F0206C /* PBWebViewController.h */,
 				18510C7B1733EA6100F0206C /* PBWebViewController.m */,
 				6404E57E1913A20700221937 /* PBWebViewController.podspec */,
@@ -211,6 +219,7 @@
 				6404E5841913A21600221937 /* LICENSE.txt in Resources */,
 				6404E5801913A20700221937 /* PBWebViewController.podspec in Resources */,
 				6401361418198A4B0041A84C /* Images.xcassets in Resources */,
+				2E59A1231CAA72820019E397 /* PBNavigationBar.xib in Resources */,
 				6404E5851913A21600221937 /* README.md in Resources */,
 				1882DF991733D8CD0030D3E2 /* InfoPlist.strings in Resources */,
 				6436E18F19139A8B009673B0 /* 782-compass.png in Resources */,
@@ -226,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1882DF9B1733D8CD0030D3E2 /* main.m in Sources */,
+				2E59A1221CAA72820019E397 /* PBNavigationBar.m in Sources */,
 				1882DF9F1733D8CD0030D3E2 /* KMAppDelegate.m in Sources */,
 				1882DFA81733D8CD0030D3E2 /* KMMasterViewController.m in Sources */,
 				1882DFAB1733D8CD0030D3E2 /* KMWebViewController.m in Sources */,

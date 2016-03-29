@@ -47,7 +47,7 @@
  * along tith a navigation toolbar with buttons to stop/refresh the loading of the page
  * as well as buttons to go back, forward and to share the URL using a `UIActivityViewController`.
  */
-@interface PBWebViewController : UIViewController <UIWebViewDelegate>
+@interface PBWebViewController : UIViewController <UIWebViewDelegate, WKUIDelegate>
 
 /**
  * The URL that will be loaded by the web view controller.
@@ -74,5 +74,7 @@
  * Clears the contents of the web view.
  */
 - (void)clear;
+
+- (void)setNavigationButtonImage:(UIImage *)image forState:(UIControlState)state;
 
 @end
