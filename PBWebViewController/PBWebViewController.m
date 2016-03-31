@@ -12,58 +12,46 @@
 
 #pragma mark - UIWebView+PBWebViewController
 
-@implementation UIWebView (PBWebViewController)
+@implementation UIView (PBWebViewController)
 @dynamic url;
 
-- (void)setDelegateViews:(id <UIWebViewDelegate>) delegateView {
-    [self setDelegate: delegateView];
-}
-
-- (void)loadRequestFromString: (NSString *) urlNameAsString {
-    [self loadRequest: [NSURLRequest requestWithURL:[NSURL URLWithString: urlNameAsString]]];
-}
-
-- (void)stopLoad {
-    [self stopLoading];
-}
-
-- (void)loadHTML:(NSString *)string baseURL:(NSURL *)baseURL {
-    [self loadHTMLString:string baseURL:baseURL];
-}
-
-- (NSURL *)url {
-    return [[self request] URL];
-}
-
-- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler: (void (^)(id, NSError *)) completionHandler {
-    NSString *string = [self stringByEvaluatingJavaScriptFromString: javaScriptString];
-    if (completionHandler) {
-        completionHandler(string, nil);
+- (void)loadRequest:(NSURLRequest *)request {
+    if (NSClassFromString(@"WKWebView")) {
+        [(WKWebView *)self loadRequest:request];
+    } else {
+        [(UIWebView *)self loadRequest:request];
     }
 }
 
-- (void)setScalesPagesToFit:(BOOL)setPages {
-    self.scalesPageToFit = setPages;
+- (void)setDelegateViews:(id)delegateView {
+    if (NSClassFromString(@"WKWebView")) {
+        [(WKWebView *)self setNavigationDelegate:delegateView];
+        [(WKWebView *)self setUIDelegate:delegateView];
+    } else {
+        [(UIWebView *)self setDelegate:delegateView];
+    }
 }
 
-@end
-
-#pragma mark - WKWebView+PBWebViewController
-
-@implementation WKWebView (PBWebViewController)
-@dynamic url;
-
-- (void)setDelegateViews:(id <WKNavigationDelegate, WKUIDelegate>) delegateView {
-    [self setNavigationDelegate: delegateView];
-    [self setUIDelegate: delegateView];
+- (void)loadRequestFromString: (NSString *) urlNameAsString {
+    if (NSClassFromString(@"WKWebView")) {
+        [(WKWebView *)self loadRequest: [NSURLRequest requestWithURL:[NSURL URLWithString:urlNameAsString]]];
+    } else {
+        [(UIWebView *)self loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlNameAsString]]];
+    }
 }
 
 - (NSURLRequest *)request {
-    return objc_getAssociatedObject(self, @selector(request));
+    if (NSClassFromString(@"WKWebView")) {
+        return objc_getAssociatedObject(self, @selector(request));
+    } else {
+        return ((UIWebView *)self).request;
+    }
 }
 
 - (void)setRequest:(NSURLRequest *)request {
-    objc_setAssociatedObject(self, @selector(request), request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    if (NSClassFromString(@"WKWebView")) {
+        objc_setAssociatedObject(self, @selector(request), request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
 }
 
 - (void)altLoadRequest:(NSURLRequest *)request {
@@ -72,37 +60,62 @@
 }
 
 - (void)stopLoad {
-    [self stopLoading];
-}
-
-- (void)loadRequestFromString:(NSString *)urlNameAsString {
-    [self loadRequest: [NSURLRequest requestWithURL:[NSURL URLWithString: urlNameAsString]]];
+    if (NSClassFromString(@"WKWebView")) {
+        [(WKWebView *)self stopLoading];
+    } else {
+        [(UIWebView *)self stopLoading];
+    }
 }
 
 - (void)loadHTML:(NSString *)string baseURL:(NSURL *)baseURL {
-    [self loadHTMLString:string baseURL:baseURL];
+    if (NSClassFromString(@"WKWebView")) {
+        [(WKWebView *)self loadHTMLString:string baseURL:baseURL];
+    } else {
+        [(UIWebView *)self loadHTMLString:string baseURL:baseURL];
+    }
+}
+
+- (NSURL *)url {
+    return [[self request] URL];
+}
+
+- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler: (void (^)(id, NSError *)) completionHandler {
+    if (NSClassFromString(@"WKWebView")) {
+        [(WKWebView *)self evaluateJavaScript:javaScriptString completionHandler:completionHandler];
+    } else {
+        NSString *string = [(UIWebView *)self stringByEvaluatingJavaScriptFromString: javaScriptString];
+        if (completionHandler) {
+            completionHandler(string, nil);
+        }
+    }
 }
 
 - (void)setScalesPagesToFit:(BOOL)setPages {
-    return; // not supported in WKWebView
+    if (NSClassFromString(@"WKWebView")) {
+        return;
+    } else {
+        ((UIWebView *)self).scalesPageToFit = setPages;
+    }
 }
 
 + (void)load {
     //exchange loadRequest and altLoadRequest
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        Class class = [self class];
-        SEL originalSelector = @selector(loadRequest:);
-        SEL swizzledSelector = @selector(altLoadRequest:);
-        Method originalMethod = class_getInstanceMethod(class, originalSelector);
-        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-        BOOL didAddMethod = class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
-        if (didAddMethod) {
-            class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
-        } else {
-            method_exchangeImplementations(originalMethod, swizzledMethod);
-        }
-    });
+    if (NSClassFromString(@"WKWebView")) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            Class class = [self class];
+            SEL originalSelector = @selector(loadRequest:);
+            SEL swizzledSelector = @selector(altLoadRequest:);
+            Method originalMethod = class_getInstanceMethod(class, originalSelector);
+            Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+            BOOL didAddMethod = class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
+            if (didAddMethod) {
+                class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+            } else {
+                method_exchangeImplementations(originalMethod, swizzledMethod);
+            }
+        });
+    }
 }
 
 @end

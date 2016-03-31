@@ -24,6 +24,12 @@
 
 @end
 
+@interface UIView (PBWebViewController) <WebViewProvider>
+
+- (void) setDelegateViews: (id <UIWebViewDelegate>) delegateView;
+
+@end
+
 @interface UIWebView (PBWebViewController) <WebViewProvider>
 
 /*
