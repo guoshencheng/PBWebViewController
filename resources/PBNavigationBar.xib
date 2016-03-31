@@ -29,25 +29,15 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PfL-7I-pKb">
-                    <rect key="frame" x="0.0" y="44" width="320" height="1"/>
-                    <color key="backgroundColor" red="0.87058823529411766" green="0.87058823529411766" blue="0.87058823529411766" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="1" id="1xY-cD-yvP"/>
-                    </constraints>
-                </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="yUS-r8-fR1" secondAttribute="trailing" constant="90" id="45P-AY-Aee"/>
                 <constraint firstItem="yUS-r8-fR1" firstAttribute="leading" secondItem="918-1n-J4n" secondAttribute="trailing" constant="30" id="6o9-XL-tfE"/>
-                <constraint firstAttribute="bottom" secondItem="PfL-7I-pKb" secondAttribute="bottom" id="RUy-Oe-DwW"/>
                 <constraint firstItem="918-1n-J4n" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="cwx-o1-pBp"/>
                 <constraint firstItem="yUS-r8-fR1" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="dJY-Dl-DQh"/>
                 <constraint firstAttribute="bottom" secondItem="918-1n-J4n" secondAttribute="bottom" id="db7-kF-132"/>
                 <constraint firstItem="918-1n-J4n" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ml6-Hm-ITZ"/>
-                <constraint firstAttribute="trailing" secondItem="PfL-7I-pKb" secondAttribute="trailing" id="uFj-bo-gFR"/>
-                <constraint firstItem="PfL-7I-pKb" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="wAw-KL-UWR"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>

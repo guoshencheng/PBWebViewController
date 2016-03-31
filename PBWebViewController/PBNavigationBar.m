@@ -40,4 +40,14 @@
     return self.label.text;
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:2];
+    self.layer.masksToBounds = false;
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowOffset = CGSizeMake(0, 1);
+    self.layer.shadowOpacity = 0.2;
+    self.layer.shadowPath = shadowPath.CGPath;
+}
+
 @end
