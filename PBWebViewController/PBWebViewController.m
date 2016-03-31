@@ -201,7 +201,7 @@
 
 - (void)configureNavigationBar {
     self.navigationBar = [PBNavigationBar create];
-    self.navigationBar.frame = CGRectMake(0, 15, [UIScreen mainScreen].bounds.size.width, 45);
+    self.navigationBar.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 60);
     [self.view addSubview:self.navigationBar];
     self.navigationBar.delegate = self;
 }

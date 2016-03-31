@@ -57,7 +57,7 @@
 
 - (void)addGradientMask {
     CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 45);
+    gradientLayer.frame = CGRectMake(0, 15, [UIScreen mainScreen].bounds.size.width, 45);
     gradientLayer.colors =  @[(id)[[UIColor colorWithWhite:0.95f alpha:1.f] CGColor], (id)[[UIColor colorWithWhite:0.95f alpha:0.0f] CGColor]];
     gradientLayer.locations = @[@0.0, @0.5, @1.0];
     gradientLayer.startPoint = CGPointMake(0.5f, 1.0f);

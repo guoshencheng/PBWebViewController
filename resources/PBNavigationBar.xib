@@ -8,11 +8,11 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PBNavigationBar">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="60"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="918-1n-J4n">
-                    <rect key="frame" x="0.0" y="0.0" width="60" height="45"/>
+                    <rect key="frame" x="0.0" y="15" width="60" height="45"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="60" id="pAo-d1-dAf"/>
                     </constraints>
@@ -21,7 +21,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yUS-r8-fR1">
-                    <rect key="frame" x="90" y="12" width="140" height="21"/>
+                    <rect key="frame" x="90" y="27.5" width="140" height="21"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="I67-w9-rZ4"/>
                     </constraints>
@@ -35,9 +35,9 @@
                 <constraint firstAttribute="trailing" secondItem="yUS-r8-fR1" secondAttribute="trailing" constant="90" id="45P-AY-Aee"/>
                 <constraint firstItem="yUS-r8-fR1" firstAttribute="leading" secondItem="918-1n-J4n" secondAttribute="trailing" constant="30" id="6o9-XL-tfE"/>
                 <constraint firstItem="918-1n-J4n" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="cwx-o1-pBp"/>
-                <constraint firstItem="yUS-r8-fR1" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="dJY-Dl-DQh"/>
+                <constraint firstItem="yUS-r8-fR1" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="8" id="dJY-Dl-DQh"/>
                 <constraint firstAttribute="bottom" secondItem="918-1n-J4n" secondAttribute="bottom" id="db7-kF-132"/>
-                <constraint firstItem="918-1n-J4n" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ml6-Hm-ITZ"/>
+                <constraint firstItem="918-1n-J4n" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="15" id="ml6-Hm-ITZ"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
