@@ -40,6 +40,11 @@
     return self.label.text;
 }
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [self addGradientMask];
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:2];
@@ -48,6 +53,16 @@
     self.layer.shadowOffset = CGSizeMake(0, 1);
     self.layer.shadowOpacity = 0.2;
     self.layer.shadowPath = shadowPath.CGPath;
+}
+
+- (void)addGradientMask {
+    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 45);
+    gradientLayer.colors =  @[(id)[[UIColor colorWithWhite:0.95f alpha:1.f] CGColor], (id)[[UIColor colorWithWhite:0.95f alpha:0.0f] CGColor]];
+    gradientLayer.locations = @[@0.0, @0.5, @1.0];
+    gradientLayer.startPoint = CGPointMake(0.5f, 1.0f);
+    gradientLayer.endPoint = CGPointMake(0.5f, 0.0f);
+    [self.layer insertSublayer:gradientLayer atIndex:0];
 }
 
 @end
